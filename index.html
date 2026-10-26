@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>サイゼリヤ セルフオーダー</title>
+<style>
+:root{--g:#43933e;--r:#bb261a;--t:#2b2b2b;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;background:#555;font-family:"Hiragino Sans","Noto Sans JP",-apple-system,sans-serif;color:var(--t)}
+#shell{max-width:430px;height:100%;margin:0 auto;background:#1c1c1e;display:flex;flex-direction:column}
+.status{height:46px;display:flex;align-items:center;justify-content:space-between;padding:0 24px 0 28px;color:#fff;font-size:17px;font-weight:600;flex:none}
+.status .icons{display:flex;align-items:center;gap:5px;font-size:15px}
+.camline{color:#ddd;font-size:15px;padding:2px 10px;flex:none;display:flex;align-items:center;gap:2px}
+#app{flex:1;background:#fff;display:flex;flex-direction:column;position:relative;overflow:hidden;min-height:0}
+header{background:var(--g);color:#fff;min-height:52px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:19px;padding:8px 10px;flex:none;text-align:center;line-height:1.3}
+header.sm{font-size:15px;justify-content:flex-start;text-align:left}
+footer{background:var(--g);color:#fff;text-align:center;font-size:15px;padding:8px;flex:none}
+main{flex:1;overflow-y:auto;padding:14px 16px;position:relative;display:flex;flex-direction:column;min-height:0}
+main.ctr{justify-content:center}
+.gb{border:2px solid #777;border-radius:12px;background:linear-gradient(#fff 40%,#e6e6e6);color:var(--g);font-weight:700;font-family:inherit}
+.red{border:1px solid #9d1d13;border-radius:10px;background:linear-gradient(#e46a62,#c52b20 45%,#b3231a);color:#fff;font-weight:700;font-family:inherit;font-size:20px;padding:12px}
+.grn{border:1px solid #3d8a39;border-radius:10px;background:linear-gradient(#8fdc8d,#55b052 55%,#4a9f47);color:#fff;font-weight:700;font-family:inherit;font-size:20px;padding:12px}
+.red:disabled{filter:grayscale(1);opacity:.6}
+.people{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.people button{height:140px;font-size:34px}
+.nav{display:flex;gap:7px;background:var(--g);padding:7px 8px 8px;flex:none;position:relative}
+.nav button{flex:1;height:64px;font-size:17px;line-height:1.15;position:relative;padding:0;border:1px solid #aaa;border-radius:6px;background:linear-gradient(#fff 30%,#ddd);color:var(--g);font-weight:900;font-family:inherit;box-shadow:inset 0 -2px 0 #bbb}
+.nav button.on{outline:3px solid #f0a040;outline-offset:-1px}
+.bd{position:absolute;top:-8px;right:-4px;min-width:26px;height:26px;border-radius:13px;background:#e0302a;color:#fff;font-size:15px;line-height:26px;font-weight:700}
+.bd.o{background:#f0a040;font-size:17px;top:-10px;right:-14px;position:absolute}
+.nm{background:#e4f9e0;color:var(--g);font-size:25px;min-height:62px;padding:10px 10px;margin-top:6px;display:flex;align-items:center}
+.go{display:flex;justify-content:flex-end;margin:14px 0 6px}.go button{padding:12px 18px;font-size:22px}
+.code{border:3px solid var(--g);min-height:62px;display:flex;align-items:center;justify-content:center;font-size:48px;font-weight:700;margin-bottom:10px;padding:6px}
+.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.keys button{height:62px;font-size:44px;border-radius:12px}
+.keys .del{background:linear-gradient(#8fdc8d,#55b052);color:#fff;font-size:30px;border-color:#3d8a39}
+.q{display:flex;justify-content:space-between;align-items:baseline;font-size:27px}
+.q b{font-weight:500;font-size:34px}
+.st{display:flex;justify-content:flex-end;align-items:center;gap:14px;margin:14px 0 36px}
+.st button{width:44px;height:44px;border:3px solid var(--g);border-radius:8px;background:#fff;color:var(--g);font-size:32px;line-height:30px;padding:0;font-weight:700}
+.st i{font-style:normal;width:62px;height:44px;border:1px solid #ccc;text-align:center;line-height:44px;font-size:30px}
+.two{display:flex;gap:16px}.two .grn{width:92px;font-size:24px;padding:12px 0}.two .red{flex:1;font-size:24px}
+.cart{border:1px solid var(--g);border-radius:8px;background:#fff;flex:1;min-height:0;overflow-y:auto;padding:6px 14px}
+.cart .it{padding:12px 0;font-size:26px}
+.sum{display:flex;justify-content:space-between;font-size:26px;margin:14px 4px;flex:none}.sum b{font-weight:500}
+.histwrap{border:1px solid var(--g);border-radius:8px;background:#f1f1f1;flex:1;min-height:0;overflow-y:auto;padding:0 16px}
+.histhd{display:grid;grid-template-columns:1fr 70px 80px;background:#ccc;padding:10px 0;font-size:25px;margin:0 -16px;padding-left:16px}
+.histrow{display:grid;grid-template-columns:1fr 70px 80px;align-items:center;padding:15px 0;font-size:23px;background:#fff;border-bottom:1px solid #eee;position:relative}
+.histrow .reorder{position:absolute;right:-8px;top:50%;transform:translateY(-50%);background:linear-gradient(#e46a62,#b3231a);color:#fff;border-radius:16px;padding:5px 12px;font-size:16px;font-weight:700;border:1px solid #9d1d13}
+.note{color:var(--g);font-size:19px;margin:10px 2px}
+.pop{position:absolute;left:5%;right:5%;top:30%;background:#fff;border-radius:10px;padding:22px 24px 20px;box-shadow:0 2px 16px rgba(0,0,0,.4);z-index:50;font-size:25px;line-height:1.5;border:1px solid #ddd}
+.pop:after{content:'';position:absolute;top:-10px;right:30px;border:10px solid transparent;border-bottom-color:#fff}
+.pop h4{color:var(--g);font-size:23px;margin:0 0 10px}
+.pop .bt{display:flex;justify-content:flex-end;gap:18px;margin-top:18px}
+.pop .bt button{font-family:inherit;font-size:21px;padding:9px 26px;border-radius:5px;border:1px solid #bbb;background:#eee;color:#444}
+.pop .bt button.y{border:2px solid #4a9eea;background:#fff;color:#222}
+.pop .bt button.ok{border:1px solid #bbb;background:#eee;color:#222;margin-left:auto}
+.msg{font-size:34px;line-height:1.5}.msg p{margin:0 0 28px}
+.call{display:flex;flex-direction:column;gap:56px}
+.call button{height:100px;width:100%;font-size:34px;text-align:left;padding:0 36px;display:flex;align-items:center;gap:20px;font-weight:500}
+.call .gy{border:2px solid #777;background:linear-gradient(#ccc,#a5a5a5);color:#ddd;border-radius:10px}
+.call .gy.act{background:linear-gradient(#8fdc8d,#55b052);color:#fff;border-color:#3d8a39}
+.lang{position:absolute;right:20px;top:20px;text-align:center;color:#7ab648;font-weight:700;font-size:17px}
+.dim{filter:blur(.3px) brightness(.97)}
+</style></head><body><div id="shell">
+<div id="app"></div>
+<script>
+const M={
+'5101':['ドリンクバー',182],'5102':['キッズドリンクバー',91],'5103':['ドリンクバーのみ(食事なし)',273],'5305':['サイゼリヤウォーター',463],
+'3301':['一番搾り(ジョッキ)',364,1],'3302':['一番搾り(グラス)',255,1],'3303':['アサヒドライゼロ',228],'3304':['氷結',319,1],'3306':['デカンタ(食前酒)',273,1],
+'3401':['グラスワイン(白)',91,1],'3402':['グラスワイン(赤)',91,1],'3403':['カラフェ小(白)',182,1],'3404':['カラフェ小(赤)',182,1],'3405':['カラフェ中(白)',364,1],'3406':['カラフェ中(赤)',364,1],'3407':['ボトルワイン(白)',1000,1],'3408':['ボトルワイン(赤)',1000,1],
+'3110':['フォカッチャ',137],'3111':['フォカッチャ ガーリックバター',182],'3112':['フォカッチャ シナモンシュガー',182],'3113':['フォカッチャ たらこソース&チーズ',228],'3114':['フォカッチャ チーズ',228],
+'3101':['ライス',137],'3102':['ライス(大盛り)',182],'3103':['ライス(小盛り)',91],
+'4301':['半熟卵',46],'4304':['きざみ野菜',91],'4307':['パルメザンチーズ',91],
+'3206':['イタリアンプリン',228],'3212':['イタリアンプリン&ティラミス',455],'3201':['ティラミス',273],'3205':['ミルクジェラート',228],'3216':['チョコレートケーキ&ミルクジェラート',455],'3207':['チョコレートケーキ',273],'3213':['トリュフアイス',319],'3215':['コーヒーゼリー&ミルクジェラート',319],'3214':['ミルクジェラート&シナモンフォカッチャ',410],
+'1401':['若鶏のバジル風味揚げ',273],'1402':['骨付き仔羊肉のグリル',364],'1452':['骨付き仔羊肉のグリル(大)',728],'1403':['ほうれん草のソテー',182],'1404':['エビのフリット',273],'1405':['エスカルゴのオーブン焼き',364],'1406':['海老のサイゼリヤ風サラダ',255],'1407':['辛味ソーセージのグリル',364],'1408':['チキンの香味野菜ソース',255],'1410':['ムール貝のオーブン焼き野菜ソース',364],'1413':['人参のグラッセ',182],'1416':['ハッシュドポテト',273],'1417':['モッツァレラとトマト',391],'1422':['生ハム',291],'1423':['生ハム&水牛モッツァレラ',455],'1425':['グリーンピースのチーズ&半熟卵のせ',182],
+'1202':['小エビのサラダ',319],'1205':['彩り海藻サラダ',319],'1209':['チキンサラダ',319],
+'1301':['コーンクリームスープ',137],'1302':['冷製かぼちゃのクリームスープ',164],'1305':['ミネストローネ',273],'1307':['オニオングラタンスープ',273],
+'2203':['水牛モッツァレラのピザ',364],'2204':['きのこと野菜のピザ',364],'2206':['コーンのピザ',364],'2208':['ソーセージのピザ',364],
+'2101':['ミートソースドリア',273],'2103':['半熟卵のミートソースドリア',319],'2108':['ミートソースドリア(チーズ)',319],'2110':['海老とたらこのドリア',364],'2115':['海老とたらこのグラタン',391],
+'2301':['タラコソーススパゲッティ',364],'2303':['ペペロンチーノ',273],'2304':['トマトとパンチェッタのスパゲッティ',364],'2305':['カルボナーラ',455],'2306':['ミートソーススパゲッティ',364],'2310':['ボンゴレスパゲッティ',455],'2316':['ミートソーススパゲッティ(半熟卵)',410],'2317':['ペペロンチーノ(半熟卵)',319],'2318':['カルボナーラ(半熟卵)',500],'2320':['海老とタラコのスパゲッティ',491],'2321':['ほうれん草ときのこクリームスパゲッティ',546],'2325':['アラビアータペンネ',391],'2328':['イカスミスパゲッティ',455],
+'2403':['ハンバーグ チーズ&トマトソース',455],'2406':['ハンバーグステーキ',364],'2407':['ハンバーグ 野菜ソース',455],'2417':['ラムのランプステーキ(店舗限定)',991],'2418':['ハンバーグ 若鶏唐揚げ&海老フライ',591],'2419':['ビーフステーキ',991]
+};
+const S={s:'start',n:0,code:'',qty:1,cart:[],sent:[],pop:null,delIdx:null,ord:72,cam:false};
+const $=document.getElementById('app');
+function statusbar(){}
+const logo=w=>`<svg width="${w}" viewBox="0 0 330 200"><ellipse cx="165" cy="100" rx="160" ry="95" fill="#fff" stroke="#43933e" stroke-width="4"/><path d="M12 120Q165 118 318 112Q300 190 165 196Q40 190 12 120Z" fill="#43933e"/><ellipse cx="165" cy="100" rx="152" ry="87" fill="none" stroke="#fff" stroke-width="4"/><path d="M20 112Q110 108 150 106L300 108" stroke="#fff" stroke-width="6" fill="none"/><path d="M140 14l10-8 12 6 12-6 10 8-6 10h-32z" fill="#43933e"/><ellipse cx="165" cy="44" rx="26" ry="20" fill="#fff" stroke="#43933e" stroke-width="3"/><path d="M148 48h34l-6 8h-22z" fill="#43933e"/><text x="165" y="104" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-weight="900" font-size="66" fill="#d12a1f" stroke="#d12a1f" stroke-width="1.5">Saizeriya</text><text x="195" y="128" text-anchor="middle" font-family="Arial" font-weight="700" font-size="13" fill="#d12a1f">RISTORANTE E CAFFÈ</text></svg>`;
+const yen=n=>n.toLocaleString();
+const agg=l=>{const m={};l.forEach(i=>{m[i.c]=(m[i.c]||0)+i.q});return Object.entries(m).map(([c,q])=>({c,q}))};
+const tot=l=>l.reduce((a,i)=>a+M[i.c][1]*i.q,0),cnt=l=>l.reduce((a,i)=>a+i.q,0);
+const hist=()=>agg(S.sent);
+const later=()=>S.sent.some(i=>i.c=='3205'||i.c=='3206'||i.c=='3201'||i.c=='3207'||i.c=='3213'||i.c=='3215'||i.c=='3214'||i.c=='3212'||i.c=='3216');
+function nav(a){const t=[['order','注文<br>追加'],['cart','注文<br>かご'],['hist','注文<br>履歴'],['call','店員<br>呼出'],['bill','会計<br>する']];
+return `<div class=nav>${t.map(([k,l])=>`<button class="${a==k||(a=='qty'&&k=='order')?'on':''}" onclick="go('${k}')">${l}${k=='cart'&&S.cart.length?`<span class=bd>${cnt(S.cart)}</span>`:''}${k=='bill'&&S.sent.length?`<span class="bd o">!</span>`:''}</button>`).join('')}</div>`}
+function go(s){if(s=='order'){S.code='';S.qty=1;S.cam=false}S.s=s;S.pop=null;draw()}
+function draw(){const s=S.s;let h='';
+if(s=='start')h=`<header>いらっしゃいませ</header><main class=ctr><div class=lang><svg width=48 height=48 viewBox="0 0 48 48" fill="none" stroke="#7ab648" stroke-width="3"><circle cx=24 cy=24 r=21 /><ellipse cx=24 cy=24 rx=9 ry=21 /><path d="M3 24h42M7 14h34M7 34h34"/></svg><br>Language</div><div style="text-align:center">${logo(220)}<div style="font-size:18px;color:#c33;margin-top:4px">イタリアンワイン＆カフェレストラン</div><div style="font-size:46px;font-weight:900;color:#d12a1f;line-height:1.1;margin-bottom:22px">サイゼリヤ</div></div><button class=red style="width:100%;font-size:30px;padding:16px 0;font-weight:500" onclick="go('ppl')">注文をはじめる</button></main><footer>©2023 Saizeriya Co,. Ltd. All rights reserved.</footer>`;
+else if(s=='ppl')h=`<header>何名様(全員)でご利用ですか？</header><main class=ctr><div class=people>${[1,2,3,4,5,6,7,8].map(n=>`<button class=gb onclick="askPpl(${n})">${n}人</button>`).join('')}<button class=gb onclick="askPpl('9人以上')">9人<br>以上</button></div>${S.pop=='ppl'?`<div class=pop>${S.n}名様でご利用ですね？<div class=bt><button onclick="S.pop=null;draw()">いいえ</button><button class=y onclick="go('order')">はい</button></div></div>`:''}</main>${nav('')}`;
+else if(s=='order'){const it=M[S.code];S.cam=S.code.length>0;
+h=`<header class=sm>メニューブックから番号を入力してください</header><main>${S.code.length?`<div class=nm>${it?it[0]:''}</div><div class=go><button class=red ${it?'':'disabled'} onclick="checkCode()">次へ進む</button></div><div class=code style="font-size:48px">${S.code}</div>`:`<div style="text-align:center">${logo(200)}</div><div class=code></div>`}<div class=keys>${[1,2,3,4,5,6,7,8,9].map(n=>`<button class=gb onclick="key(${n})">${n}</button>`).join('')}<span></span><button class=gb onclick="key(0)">0</button><button class="gb del" onclick="S.code=S.code.slice(0,-1);draw()">削除</button></div>
+${S.pop=='notfound'?`<div class=pop>この番号のメニューが見つかりません。<br>メニュー番号をお確かめください。<div class=bt><button class=ok onclick="S.code='';S.pop=null;draw()">OK</button></div></div>`:''}
+${S.pop=='alc'?`<div class=pop><h4>アルコール販売についてのご確認</h4>20歳未満のお客様、およびお車や自転車などを運転されるお客様へのアルコール販売をお断りしております。<div class=bt><button onclick="S.code='';S.pop=null;draw()">もどる</button><button class=y onclick="S.pop=null;go('qty')">確認</button></div></div>`:''}
+</main>${nav('order')}`}
+else if(s=='qty'){const it=M[S.code];h=`<header>数量を選択してください</header><main class=ctr><div class=q><span>${it[0]}</span><b>${it[1]}円</b></div><div class=st><button onclick="S.qty=Math.max(1,S.qty-1);draw()">−</button><i>${S.qty}</i><button onclick="S.qty=Math.min(99,S.qty+1);draw()">+</button></div><div class=two><button class=grn onclick="go('order')">もどる</button><button class=red onclick="S.cart.push({c:S.code,q:S.qty});go('cart')">注文かごへ追加する</button></div></main>${nav('qty')}`}
+else if(s=='cart'){h=`<header class=sm>他に注文があれば「追加」、なければ「注文」を押してください</header><main style="background:#eee">
+<div class=cart>${S.cart.length?S.cart.map((i,k)=>`<div class=it><div>${M[i.c][0]}</div><div class=st style="margin:8px 12px 0"><button onclick="qc(${k},-1)">−</button><i>${i.q}</i><button onclick="qc(${k},1)">+</button></div></div>`).join(''):''}</div>
+<div class=sum><span>${cnt(S.cart)}点</span><b>合計 ${yen(tot(S.cart))}円 (税込)</b></div>
+<div style="display:flex;gap:16px"><button class=grn style="flex:1;font-size:36px;letter-spacing:12px" onclick="go('order')">追加</button><button class=red style="flex:1;font-size:36px;letter-spacing:12px" ${S.cart.length?'':'disabled'} onclick="S.pop='confirm';draw()">注文</button></div>
+${S.pop=='confirm'?`<div class=pop>ご注文はすべて入力済みですか？送信します。<div class=bt><button onclick="S.pop=null;draw()">いいえ</button><button class=y onclick="send()">はい</button></div></div>`:''}
+${S.pop=='delcart'?`<div class=pop>このメニューを削除してよろしいですか？<div class=bt><button onclick="S.pop=null;draw()">いいえ</button><button class=y onclick="doDel()">はい</button></div></div>`:''}
+</main>${nav('cart')}`}
+else if(s=='thx')h=`<header style="color:#5aa655">ご注文ありがとうございます</header><main class=ctr><div class=msg><p>お水・おしぼりはドリンクカウンターにてセルフサービスでお取りください。</p><p>ドリンクバー注文のお客様は、ドリンクカウンターでドリンクをお取りください。</p></div></main>${nav('')}`;
+else if(s=='hist'){const l=hist();h=`<header>注文内容をご確認ください</header><main style="padding-top:14px">
+<div class=histwrap><div class=histhd><span>メニュー名</span><span>数量</span><span>価格</span></div>${l.map(i=>`<div class=histrow><span>${M[i.c][0]}</span><span style="text-align:center">${i.q}</span><span style="text-align:right">${M[i.c][1]*i.q}</span></div>`).join('')}</div>
+<div class=note>注文の反映には数分かかることがございます</div>
+<div class=sum><span>${cnt(l)}点</span><b>合計 ${yen(tot(l))}円 (税込)</b></div>
+</main>${nav('hist')}`}
+else if(s=='call')h=`<header>ご希望のボタンを押してください</header><main class=ctr><div class=call><button class=red onclick="alert('店員に通知しました')">🔔 店員を呼ぶ</button><button class="gy ${later()?'act':''}" onclick="${later()?"alert('デザートの準備を依頼しました')":''}">🍰 デザートを持ってきて</button></div></main>${nav('call')}`;
+else if(s=='bill'){const l=hist();h=`<header class=sm>お帰りの際は[お支払いへ進む]をタップしてください</header><main style="padding-top:14px">
+<div class=histwrap><div class=histhd><span>メニュー名</span><span>数量</span><span>価格</span></div>${l.map(i=>`<div class=histrow><span>${M[i.c][0]}</span><span style="text-align:center">${i.q}</span><span style="text-align:right">${M[i.c][1]*i.q}</span></div>`).join('')}</div>
+<div class=sum><span>${cnt(l)}点</span><b>合計 ${yen(tot(l))}円 (税込)</b></div>
+<div style="text-align:center"><button class=red style="width:84%;font-size:38px;padding:14px" ${S.sent.length?'':'disabled'} onclick="go('pay')">お支払いへ進む</button></div></main>${nav('bill')}`}
+else if(s=='pay'){let r=tot(S.sent)+41,b='';for(let i=0;i<58;i++){r=(r*9301+49297)%233280;b+=`<i style="display:block;background:#000;height:100%;width:${2+Math.floor(r/233280*7)}px;margin-right:${2+r%4}px"></i>`}
+h=`<header>この画面をレジでお知らせください</header><main class=ctr style="text-align:center"><div style="text-align:right;font-size:28px;padding-right:20px">${S.ord}</div><div>${logo(170)}</div><div style="display:flex;height:120px;justify-content:center;margin:16px 0 4px;overflow:hidden">${b}</div><div style="font-size:30px;letter-spacing:7px">${'5041083'+String(41046+S.ord).padStart(5,'0')}</div><button class=grn style="width:64%;margin-top:28px;font-size:22px;font-weight:500">明細を表示する</button><p style="font-size:20px;line-height:1.5;margin-top:24px">※この画面は、お会計後、自動的に閉じます。</p></main><footer>©2023 Saizeriya Co,. Ltd. All rights reserved.</footer>`}
+$.innerHTML=h;}
+function askPpl(n){S.n=n;S.pop='ppl';draw()}
+function key(k){if(S.code.length<4)S.code+=k;draw()}
+function checkCode(){const it=M[S.code];if(!it){S.pop='notfound';draw();return}
+if(it[2]==1){S.pop='alc';draw();return}
+go('qty')}
+function qc(k,d){S.cart[k].q+=d;if(S.cart[k].q<1){S.delIdx=k;S.pop='delcart';draw();return}draw()}
+function doDel(){S.cart.splice(S.delIdx,1);S.pop=null;draw()}
+function send(){S.sent.push(...S.cart);S.cart=[];go('thx')}
+draw();setInterval(statusbar,15000);
+</script></body></html>
